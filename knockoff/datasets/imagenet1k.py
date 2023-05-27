@@ -31,19 +31,19 @@ class ImageNet1k(ImageFolder):
         self.root = root
 
         self.partition_to_idxs = self.get_partition_to_idxs()
-        self.pruned_idxs = self.partition_to_idxs['train' if train else 'test']
+        self.pruned_idxs = self.partition_to_idxs['train' if train else 'val']
 
         # Prune (self.imgs, self.samples to only include examples from the required train/test partition
         self.samples = [self.samples[i] for i in self.pruned_idxs]
         self.imgs = self.samples
 
-        print('=> done loading {} ({}) with {} examples'.format(self.__class__.__name__, 'train' if train else 'test',
+        print('=> done loading {} ({}) with {} examples'.format(self.__class__.__name__, 'train' if train else 'val',
                                                                 len(self.samples)))
 
     def get_partition_to_idxs(self):
         partition_to_idxs = {
             'train': [],
-            'test': []
+            'val': []
         }
 
         # Note: we perform a 80-20 split of imagenet training
@@ -57,7 +57,7 @@ class ImageNet1k(ImageFolder):
         train_idxs = list(set(idxs) - set(test_idxs))
 
         partition_to_idxs['train'] = train_idxs
-        partition_to_idxs['test'] = test_idxs
+        partition_to_idxs['val'] = test_idxs
 
         np.random.set_state(prev_state)
 
